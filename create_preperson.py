@@ -34,17 +34,22 @@ login_button.click()
 
 time.sleep(30)
 
-try:
-    enjoyhint_close_btn = driver.find_element(By.CLASS_NAME, "enjoyhint_close_btn")
-    action.move_to_element(enjoyhint_close_btn).perform()
-    time.sleep(1)
-    action.click(enjoyhint_close_btn).perform()
-except:
-    pass
+enjoyhint_close_btn = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CLASS_NAME, "enjoyhint_close_btn")))
+action.move_to_element(enjoyhint_close_btn).perform()
+action.click(enjoyhint_close_btn).perform()
 
 side_bar_list = driver.find_element(By.CLASS_NAME, "sitebar-list")
 action.move_to_element(side_bar_list).perform()
-time.sleep(10)
+
+# Приховуємо дебаг-панель (phpdebugbar)
+driver.execute_script("document.querySelector('.phpdebugbar').style.display = 'none';")
+
+create_patient_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.ID, "patient-create")))
+create_patient_button.click()
+time.sleep(2)
+
+create_preperson_button = driver.find_element(By.XPATH, "//a[@href='https://master.devaskep.net/doctor/prepersons/create']")
+create_preperson_button.click()
 
 print("The test was executed successfully")
 time.sleep(10)
