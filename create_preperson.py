@@ -1,111 +1,35 @@
 import time
-import random
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.remote.webelement import WebElement
 
-from faker import Faker
-
-
-chrome_driver_path = '/Users/VisualStudioCodeProjects/Askep.net.Testing_by_Selenium/chromedriver-mac-x64/chromedriver'
-service = Service(chrome_driver_path)
-
-driver = webdriver.Chrome(service=service)
-driver.get('https://master.devaskep.net/')
-
-# Створення об'єкту ActionChains
-action = ActionChains(driver)
-# Створення об'єкту Faker
-fake = Faker('uk_UA') 
-
-# Початок скрипта тесту
-main_login_button = driver.find_element(By.CSS_SELECTOR, ".btn.btn--light-blue.btn-login")
-main_login_button.click()
-
-login_as_doctor_tab = driver.find_element(By.ID, "doctorTab")
-login_as_doctor_tab.click()
-
-# Дані для входу у профіль користувача типу SPECIALIST
-login_field = driver.find_element(By.NAME, "username")
-login_field.send_keys("specialist_nerv_cmd@askep.net")
-
-password_field = driver.find_element(By.NAME, "password")
-password_field.send_keys("roegpi12")
-
-login_button = driver.find_element(By.XPATH, "//button[@type='submit' and normalize-space(text())='увійти']")
-login_button.click()
-
-time.sleep(5)
-
-# Закриття підказок при першому вході
-enjoyhint_close_btn = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CLASS_NAME, "enjoyhint_close_btn")))
-action.move_to_element(enjoyhint_close_btn).perform()
-action.click(enjoyhint_close_btn).perform()
-
-# Відкриття лівого навігаційного меню
-side_bar_list = driver.find_element(By.CLASS_NAME, "sitebar-list")
-action.move_to_element(side_bar_list).perform()
-
-# Приховування дебаг-панелі (phpdebugbar)
-driver.execute_script("document.querySelector('.phpdebugbar').style.display = 'none';")
-
-create_patient_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.ID, "patient-create")))
-create_patient_button.click()
-
-create_preperson_button = driver.find_element(By.XPATH, "//a[@href='https://master.devaskep.net/doctor/prepersons/create']")
-create_preperson_button.click()
-
-ok_button = driver.find_element(By.XPATH, "//button[text()='OK']")
-ok_button.click()
+from initialize_data import driver, fake, action
+from login import hide_phpdebugbar, login_SPECIALIST_user, set_main_page
+from helpful_functions import generate_custom_gender, generate_custom_patronymic, generate_custom_phone_number
 
 
-def generate_custom_phone_number(length):
-    """Генерація випадкового телефонного номера із заданою кількістю цифр"""
-    phone_number = str(random.randint(0, 9))
-    phone_number += ''.join(random.choices('0123456789', k=length - 1))
-    return phone_number
+def open_create_preperson_form() -> None:
+    """Функція знаходить у лівому меню профілю відповідний розділ та відкриває форму створення неідентифікованого пацієнта"""
+    create_patient_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.ID, "patient-create")))
+    create_patient_button.click()
 
-def generate_custom_gender():
-    genders = ["чоловіча", "жіноча"]
-    gender = random.choice(genders)
-    return str(gender)
+    create_preperson_button = driver.find_element(By.XPATH, "//a[@href='https://master.devaskep.net/doctor/prepersons/create']")
+    create_preperson_button.click()
 
-def generate_patronymic(name: str, gender: str) -> str:
-    # Обрізаємо можливі пробіли
-    name = name.strip().lower()
+    ok_button = driver.find_element(By.XPATH, "//button[text()='OK']")
+    ok_button.click()
 
-    # Остання літера імені
-    last_letter = name[-1]
-
-    if gender == 'чоловіча':
-        # Для чоловічих по батькові
-        if last_letter in ['а', 'я', 'й', 'ь']:
-            patronymic = name[:-1] + "йович"  # Якщо на голосну або м'який приголосний
-        else:
-            patronymic = name + "ович"  # Якщо на твердий приголосний
-    elif gender == 'жіноча':
-        # Для жіночих по батькові
-        if last_letter in ['а', 'я', 'й', 'ь']:
-            patronymic = name[:-1] + "ївна"  # Якщо на голосну або м'який приголосний
-        else:
-            patronymic = name + "івна"  # Якщо на твердий приголосний
-    else:
-        raise ValueError("Невідома стать, використовуйте 'чоловіча' або 'жіноча'.")
-    
-    # Повертаємо по батькові з великої літери
-    return patronymic.capitalize()
-
-def get_preperson_fields():
+def get_preperson_fields() -> tuple:
     """Функція знаходить всі поля форми створення неідентифікованого пацієнта та повертає їх (за винятком статі та причини створення)"""
+    # Дані пацієнта
     lastname = driver.find_element(By.XPATH, "//label[text()=' Прізвище (зі слів пацієнта або супровідної особи)']/following-sibling::input")
     name = driver.find_element(By.XPATH, "//label[text()=\" Ім'я (зі слів пацієнта або супровідної особи)\"]/following-sibling::input")
     surname = driver.find_element(By.XPATH, "//label[text()=' По батькові (зі слів пацієнта або супровідної особи)']/following-sibling::input")
     birthdate = driver.find_element(By.XPATH, "//label[contains(text(), 'Дата народження (зі слів пацієнта або супровідної особи) ')]/following-sibling::input")
     
+    # Дані контактної особи
     contact_person_lastname = driver.find_element(By.XPATH, "//label[text()=' Прізвище ']/following-sibling::input")
     contact_person_name = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//label[normalize-space(text())=\"Ім'я\"]/following-sibling::input")))
     contact_person_surname = driver.find_element(By.XPATH, "//label[text()=' По батькові ']/following-sibling::input")
@@ -115,18 +39,17 @@ def get_preperson_fields():
     return (lastname, name, surname, birthdate, contact_person_lastname, contact_person_name, contact_person_surname, 
             contact_person_mobile_phone, contact_person_phone)
 
-def fill_preperson_data(lastname, name, surname, birthdate, contact_person_lastname,
-                      contact_person_name, contact_person_surname, contact_person_mobile_phone, contact_person_phone):
-    """Функція заповнює всі поля форми створення неідентифікованого пацієнта"""
+def fill_preperson_data(lastname: WebElement, name: WebElement, surname: WebElement, birthdate: WebElement, contact_person_lastname: WebElement,
+                      contact_person_name: WebElement, contact_person_surname: WebElement, contact_person_mobile_phone: WebElement, contact_person_phone: WebElement) -> None:
+    """Функція заповнює всі поля форми створення неідентифікованого пацієнта."""
     time.sleep(1)
-    # Приховування дебаг-панелі (phpdebugbar)
-    driver.execute_script("document.querySelector('.phpdebugbar').style.display = 'none';")
+    hide_phpdebugbar()
+    time.sleep(1)
 
-    time.sleep(1)
     lastname.send_keys(fake.last_name()) 
     name.send_keys(fake.first_name())
 
-    # Клік на контейнер, який виглядає як поле для вибору статі
+    # Клік на контейнер, який є полем для вибору статі
     gender = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='select2-selection select2-selection--single']")))
     gender.click()
     # Вибір випадкової опції з відкритого списку
@@ -163,25 +86,42 @@ def fill_preperson_data(lastname, name, surname, birthdate, contact_person_lastn
     # Заповнення даних контактної особи
     contact_person_lastname.send_keys(fake.last_name())
     contact_person_name.send_keys(fake.first_name())
-    contact_person_surname.send_keys(generate_patronymic(str(fake.first_name()), str(generate_custom_gender())))
+    contact_person_surname.send_keys(generate_custom_patronymic(str(fake.first_name()), str(generate_custom_gender())))
     contact_person_mobile_phone.send_keys(generate_custom_phone_number(10))
     contact_person_phone.send_keys(generate_custom_phone_number(10))
 
-# Виклик основних функцій скрипта
+def create_preperson() -> None:
+    """Функція створює неідентифікованого пацієнта - надсилає дані на сервер та до ЦБД, виконуючи кліки на відповідні кнопки"""
+    creation_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Створити')]")))
+    update_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Оновити та вивантажити на eHealth')]")))
+
+    action.move_to_element(creation_button).perform()
+    creation_button.click()
+    time.sleep(5)
+    update_button.click()
+    time.sleep(10)
+
+def get_preperson_public_id() -> str | None:
+    """Функція повертає публічний ідентифікатор створеного та вивантаженого до ЦБД неідентифікованого пацієнта. 
+       Приклад: 41571077.3329002795.2197"""
+    # Знайти елемент за назвою
+    label_element = driver.find_element(By.XPATH, "//label[text()=' Ідентифікатор пацієнта ']")
+    # Якщо знайдено, шукаємо input поруч
+    input_element = label_element.find_element(By.XPATH, "./following-sibling::input")
+    # Отримати значення поля
+    value = input_element.get_attribute('value')
+    return value
+
+# Виклики основних функцій скрипта
+login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
+set_main_page()
+open_create_preperson_form()
 preperson_fields = get_preperson_fields()
 fill_preperson_data(*preperson_fields)
+create_preperson()
 
-# Створення неідентифікованого пацієнта - надсилання даних на сервер та до ЦБД, кліки на відповідні кнопки
-creation_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Створити')]")))
-update_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Оновити та вивантажити на eHealth')]")))
-
-action.move_to_element(creation_button).perform()
-creation_button.click()
-time.sleep(5)
-update_button.click()
-time.sleep(10)
-
-print("The test was ex ecuted successfully")
-
+# Допоміжні дії для дебагу
+print(get_preperson_public_id())
+print("The test was executed successfully")
 # Закриття браузера
 driver.quit()
