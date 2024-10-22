@@ -101,7 +101,7 @@ def create_preperson() -> None:
     update_button.click()
     time.sleep(10)
 
-def get_preperson_public_id() -> str | None:
+def get_preperson_public_id() -> str:
     """Функція повертає публічний ідентифікатор створеного та вивантаженого до ЦБД неідентифікованого пацієнта. 
        Приклад: 41571077.3329002795.2197"""
     # Знайти елемент за назвою
@@ -109,12 +109,14 @@ def get_preperson_public_id() -> str | None:
     # Якщо знайдено, шукаємо input поруч
     input_element = label_element.find_element(By.XPATH, "./following-sibling::input")
     # Отримати значення поля
-    value = input_element.get_attribute('value')
-    return value
+    value = str(input_element.get_attribute('value'))
+    return value[20:]
 
-# Виклики основних функцій скрипта
+# Виклики функцій для логіну користувача та підготовки головної сторінки
 login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
 set_main_page()
+
+# Виклики основних функцій скрипта
 open_create_preperson_form()
 preperson_fields = get_preperson_fields()
 fill_preperson_data(*preperson_fields)

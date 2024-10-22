@@ -41,4 +41,8 @@ def set_main_page() -> None:
     side_bar_list = driver.find_element(By.CLASS_NAME, "sitebar-list")
     action.move_to_element(side_bar_list).perform()
 
+    # Cкролити до розділу "Пацієнти" -> "Створити пацієнта"
+    search_patient_button = driver.find_element(By.XPATH, "//a[contains(text(), 'Неідентифікованого')]")
+    driver.execute_script("arguments[0].scrollIntoView(true);", search_patient_button)
+
     hide_phpdebugbar()

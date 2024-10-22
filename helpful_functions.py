@@ -1,5 +1,7 @@
 import random
 
+from initialize_data import driver
+
 
 def generate_custom_phone_number(length: int) -> str:
     """Генерація випадкового телефонного номера із заданою кількістю цифр"""
@@ -37,3 +39,20 @@ def generate_custom_patronymic(name: str, gender: str) -> str:
     
     # Повертаємо по батькові з великої літери
     return patronymic.capitalize()
+
+def generate_custom_public_id() -> str:
+    """Генерація штучного публічного ідентифікатора існуючого в базі неідентифікованого пацієнта"""
+    id = random.choice(range(1, 2202))
+    return str(id)
+
+def scroll_page_down(percent_to_scroll: int) -> None:
+    """Прокрутка сторінки донизу на задану кількість відсотків"""
+    # Отримати висоту всього документа та висоту вікна (показуваного контенту)
+    document_height = driver.execute_script("return document.body.scrollHeight")
+    window_height = driver.execute_script("return window.innerHeight")
+
+    # Обчислити, на скільки пікселів прокрутити
+    pixels_to_scroll = (document_height - window_height) * (percent_to_scroll / 100)
+
+    # Прокрутка на обчислену кількість пікселів
+    driver.execute_script(f"window.scrollTo(0, {pixels_to_scroll});")
