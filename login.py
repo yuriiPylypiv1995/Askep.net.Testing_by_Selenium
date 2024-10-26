@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from initialize_data import driver, action
+from initialize_data import driver, action, set_zoom
 
 def login_SPECIALIST_user(login: str, password: str) -> None:
     """Функція знаходить потрібні елементи та залогінює користувача типу SPECIALIST за наданими логіном та паролем"""
