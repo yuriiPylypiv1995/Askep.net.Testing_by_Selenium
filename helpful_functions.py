@@ -1,5 +1,9 @@
 import random
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from initialize_data import driver
 
 
@@ -56,3 +60,22 @@ def scroll_page_down(percent_to_scroll: int) -> None:
 
     # Прокрутка на обчислену кількість пікселів
     driver.execute_script(f"window.scrollTo(0, {pixels_to_scroll});")
+
+def scroll_modal_patient_menu() -> None:
+    """Прокрутка модального вікна меню ідентифікованого павцієнта донизу"""
+    # Знаходимо елемент modal-body
+    modal_body = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, 
+                                "//div[contains(@class, 'modal-body') and .//h5[text()=' Виписати без заповнення всієї історії']]")))
+
+    # Прокручуємо модальне вікно до самого низу
+    driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", modal_body)
+
+def switch_to_the_last_tab() -> None:
+    """Функція перемикає драйвер на останню відкриту вкладку в браузері"""
+    driver.switch_to.window(driver.window_handles[-1])  # Перемикаємося на останню вкладку
+
+def get_page_source() -> None:
+    """Отримуємо HTML-код сторінки та записуємо його у файл"""
+    page_html = driver.page_source
+    with open("page_source.html", "w", encoding="utf-8") as file:
+        file.write(page_html)
