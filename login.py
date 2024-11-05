@@ -33,9 +33,9 @@ def hide_phpdebugbar() -> None:
 def set_main_page() -> None:
     """Функція очищає головну сторінку профілю залогіненого користувача від зайвих веб-елементів"""
     # Закриття підказок при першому вході
-    enjoyhint_close_btn = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CLASS_NAME, "enjoyhint_close_btn")))
-    action.move_to_element(enjoyhint_close_btn).perform()
-    action.click(enjoyhint_close_btn).perform()
+    # enjoyhint_close_btn = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CLASS_NAME, "enjoyhint_close_btn")))
+    # action.move_to_element(enjoyhint_close_btn).perform()
+    # action.click(enjoyhint_close_btn).perform()
 
     # Відкриття лівого навігаційного меню
     side_bar_list = driver.find_element(By.CLASS_NAME, "sitebar-list")

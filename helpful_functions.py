@@ -61,6 +61,18 @@ def scroll_page_down(percent_to_scroll: int) -> None:
     # Прокрутка на обчислену кількість пікселів
     driver.execute_script(f"window.scrollTo(0, {pixels_to_scroll});")
 
+def scroll_page_up(percent_to_scroll: int) -> None:
+    """Прокрутка сторінки догори на задану кількість відсотків"""
+    # Отримати висоту всього документа та висоту вікна (показуваного контенту)
+    document_height = driver.execute_script("return document.body.scrollHeight")
+    window_height = driver.execute_script("return window.innerHeight")
+
+    # Обчислити, на скільки пікселів прокрутити
+    pixels_to_scroll = (document_height - window_height) * (percent_to_scroll / 100)
+
+    # Прокрутка на обчислену кількість пікселів догори
+    driver.execute_script(f"window.scrollBy(0, -{pixels_to_scroll});")
+
 def scroll_modal_patient_menu() -> None:
     """Прокрутка модального вікна меню ідентифікованого павцієнта донизу"""
     # Знаходимо елемент modal-body
