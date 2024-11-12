@@ -104,22 +104,23 @@ def save_procedure() -> None:
     update_procedure_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Оновити процедуру')]")))
     update_procedure_button.click()
 
-# Виклики функцій для логіну користувача та підготовки головної сторінки
-login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
-set_main_page()
+if __name__ == "__main__":
+    # Виклики функцій для логіну користувача та підготовки головної сторінки
+    login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
+    set_main_page()
 
-# Виклики основних функцій скрипта
-open_search_person_page()
-hide_phpdebugbar()
-search_person("Тимко Андрій")
-time.sleep(2)
-open_patient_procedures_page("960056")
-open_procedure_edit_page("9064")
-update_procedure()
-save_procedure()
-time.sleep(10)
+    # Виклики основних функцій скрипта
+    open_search_person_page()
+    hide_phpdebugbar()
+    search_person("Тимко Андрій")
+    time.sleep(2)
+    open_patient_procedures_page("960056")
+    open_procedure_edit_page("9064")
+    update_procedure()
+    save_procedure()
+    time.sleep(10)
 
-# Допоміжні дії для дебагу
-print("The test was executed successfully")
-# Закриття браузера
-driver.quit()
+    # Допоміжні дії для дебагу
+    print("The test was executed successfully")
+    # Закриття браузера
+    driver.quit()

@@ -10,7 +10,7 @@ from login import hide_phpdebugbar, login_SPECIALIST_user, set_main_page
 from helpful_functions import generate_custom_gender, generate_custom_patronymic, generate_custom_phone_number
 
 
-def open_create_preperson_form() -> None:
+def open_create_preperson_form(driver=driver) -> None:
     """Функція знаходить у лівому меню профілю відповідний розділ та відкриває форму створення неідентифікованого пацієнта"""
     create_patient_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.ID, "patient-create")))
     create_patient_button.click()
@@ -21,7 +21,7 @@ def open_create_preperson_form() -> None:
     ok_button = driver.find_element(By.XPATH, "//button[text()='OK']")
     ok_button.click()
 
-def get_preperson_fields() -> tuple:
+def get_preperson_fields(driver=driver) -> tuple:
     """Функція знаходить всі поля форми створення неідентифікованого пацієнта та повертає їх (за винятком статі та причини створення)"""
     # Дані пацієнта
     lastname = driver.find_element(By.XPATH, "//label[text()=' Прізвище (зі слів пацієнта або супровідної особи)']/following-sibling::input")
@@ -40,7 +40,7 @@ def get_preperson_fields() -> tuple:
             contact_person_mobile_phone, contact_person_phone)
 
 def fill_preperson_data(lastname: WebElement, name: WebElement, surname: WebElement, birthdate: WebElement, contact_person_lastname: WebElement,
-                      contact_person_name: WebElement, contact_person_surname: WebElement, contact_person_mobile_phone: WebElement, contact_person_phone: WebElement) -> None:
+                      contact_person_name: WebElement, contact_person_surname: WebElement, contact_person_mobile_phone: WebElement, contact_person_phone: WebElement, driver=driver) -> None:
     """Функція заповнює всі поля форми створення неідентифікованого пацієнта."""
     time.sleep(1)
     hide_phpdebugbar()
@@ -90,18 +90,18 @@ def fill_preperson_data(lastname: WebElement, name: WebElement, surname: WebElem
     contact_person_mobile_phone.send_keys(generate_custom_phone_number(10))
     contact_person_phone.send_keys(generate_custom_phone_number(10))
 
-def create_preperson() -> None:
+def create_preperson(driver=driver) -> None:
     """Функція створює неідентифікованого пацієнта - надсилає дані на сервер та до ЦБД, виконуючи кліки на відповідні кнопки"""
     creation_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Створити')]")))
     update_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Оновити та вивантажити на eHealth')]")))
 
     action.move_to_element(creation_button).perform()
     creation_button.click()
-    time.sleep(5)
+    time.sleep(7)
     update_button.click()
     time.sleep(10)
 
-def get_preperson_public_id() -> str:
+def get_preperson_public_id(driver=driver) -> str:
     """Функція повертає публічний ідентифікатор створеного та вивантаженого до ЦБД неідентифікованого пацієнта. 
        Приклад: 41571077.3329002795.2197"""
     # Знайти елемент за назвою
@@ -112,18 +112,19 @@ def get_preperson_public_id() -> str:
     value = str(input_element.get_attribute('value'))
     return value[20:]
 
-# Виклики функцій для логіну користувача та підготовки головної сторінки
-login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
-set_main_page()
+if __name__ == "__main__":
+    # Виклики функцій для логіну користувача та підготовки головної сторінки
+    login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
+    set_main_page()
 
-# Виклики основних функцій скрипта
-open_create_preperson_form()
-preperson_fields = get_preperson_fields()
-fill_preperson_data(*preperson_fields)
-create_preperson()
+    # Виклики основних функцій скрипта
+    open_create_preperson_form()
+    preperson_fields = get_preperson_fields()
+    fill_preperson_data(*preperson_fields)
+    create_preperson()
 
-# Допоміжні дії для дебагу
-print(get_preperson_public_id())
-print("The test was executed successfully")
-# Закриття браузера
-driver.quit()
+    # Допоміжні дії для дебагу
+    print(get_preperson_public_id())
+    print("The test was executed successfully")
+    # Закриття браузера
+    driver.quit()

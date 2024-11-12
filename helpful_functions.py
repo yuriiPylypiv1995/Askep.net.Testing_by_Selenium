@@ -46,10 +46,10 @@ def generate_custom_patronymic(name: str, gender: str) -> str:
 
 def generate_custom_public_id() -> str:
     """Генерація штучного публічного ідентифікатора існуючого в базі неідентифікованого пацієнта"""
-    id = random.choice(range(1, 2202))
+    id = random.choice(range(2000, 2211))
     return str(id)
 
-def scroll_page_down(percent_to_scroll: int) -> None:
+def scroll_page_down(percent_to_scroll: int, driver=driver) -> None:
     """Прокрутка сторінки донизу на задану кількість відсотків"""
     # Отримати висоту всього документа та висоту вікна (показуваного контенту)
     document_height = driver.execute_script("return document.body.scrollHeight")
@@ -61,7 +61,7 @@ def scroll_page_down(percent_to_scroll: int) -> None:
     # Прокрутка на обчислену кількість пікселів
     driver.execute_script(f"window.scrollTo(0, {pixels_to_scroll});")
 
-def scroll_page_up(percent_to_scroll: int) -> None:
+def scroll_page_up(percent_to_scroll: int, driver=driver) -> None:
     """Прокрутка сторінки догори на задану кількість відсотків"""
     # Отримати висоту всього документа та висоту вікна (показуваного контенту)
     document_height = driver.execute_script("return document.body.scrollHeight")
@@ -73,7 +73,7 @@ def scroll_page_up(percent_to_scroll: int) -> None:
     # Прокрутка на обчислену кількість пікселів догори
     driver.execute_script(f"window.scrollBy(0, -{pixels_to_scroll});")
 
-def scroll_modal_patient_menu() -> None:
+def scroll_modal_patient_menu(driver=driver) -> None:
     """Прокрутка модального вікна меню ідентифікованого павцієнта донизу"""
     # Знаходимо елемент modal-body
     modal_body = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, 
@@ -82,12 +82,18 @@ def scroll_modal_patient_menu() -> None:
     # Прокручуємо модальне вікно до самого низу
     driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", modal_body)
 
-def switch_to_the_last_tab() -> None:
+def switch_to_the_last_tab(driver=driver) -> None:
     """Функція перемикає драйвер на останню відкриту вкладку в браузері"""
     driver.switch_to.window(driver.window_handles[-1])  # Перемикаємося на останню вкладку
 
-def get_page_source() -> None:
+def get_page_source(driver=driver) -> None:
     """Отримуємо HTML-код сторінки та записуємо його у файл"""
     page_html = driver.page_source
     with open("page_source.html", "w", encoding="utf-8") as file:
         file.write(page_html)
+
+def switch_to_the_page_navigation(page_num: str, driver=driver) -> None:
+    """Переключення на задану сторінку, якщо передбачена пагінація.
+    ! Функція писалася під сторінку з переліком амбулаторних епізодів у внутрішній статистиці"""
+    navigation_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f"//button[@aria-label='Перейти на сторінку {str(page_num)}']")))
+    navigation_button.click()
