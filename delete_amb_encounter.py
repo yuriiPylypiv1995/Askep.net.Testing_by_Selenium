@@ -40,7 +40,7 @@ def delete_encounter() -> None:
 
 if __name__ == "__main__":
     # Виклики функцій для логіну користувача та підготовки головної сторінки
-    login_SPECIALIST_user("specialist_nerv_cmd@askep.net", "roegpi12")
+    login_SPECIALIST_user("info+specialist_nerv_cmd@askep.net", "roegpi12")
     set_main_page()
 
     # Виклики основних функцій скрипта
