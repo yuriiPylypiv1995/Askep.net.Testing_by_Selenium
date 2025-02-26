@@ -46,7 +46,7 @@ if __name__ == "__main__":
     # Виклики основних функцій скрипта
     open_amb_episodes_internal_statistic_page()
     hide_phpdebugbar()
-    # switch_to_the_page_navigation("3")
+    switch_to_the_page_navigation("3")
     open_encounters_in_episode_page("епізод для скрипта")
     delete_encounter()
     time.sleep(5)

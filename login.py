@@ -39,11 +39,11 @@ def set_main_page(driver=driver) -> None:
     # action.click(enjoyhint_close_btn).perform()
 
     # Відкриття лівого навігаційного меню
-    side_bar_list = driver.find_element(By.CLASS_NAME, "sitebar-list")
+    side_bar_list = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "sitebar-list")))
     action.move_to_element(side_bar_list).perform()
 
     # Cкролити до розділу "Пацієнти" -> "Пошук пацієнта" -> "Неідентифікованого"
-    search_patient_button = driver.find_element(By.XPATH, "//a[contains(text(), 'Неідентифікованого')]")
+    search_patient_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//a[contains(text(), 'Неідентифікованого')]")))
     driver.execute_script("arguments[0].scrollIntoView(true);", search_patient_button)
 
     hide_phpdebugbar()

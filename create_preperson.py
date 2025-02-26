@@ -15,10 +15,10 @@ def open_create_preperson_form(driver=driver) -> None:
     create_patient_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.ID, "patient-create")))
     create_patient_button.click()
 
-    create_preperson_button = driver.find_element(By.XPATH, "//a[@href='https://master.devaskep.net/doctor/prepersons/create']")
+    create_preperson_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.XPATH, "//a[@href='https://master.devaskep.net/doctor/prepersons/create']")))
     create_preperson_button.click()
 
-    ok_button = driver.find_element(By.XPATH, "//button[text()='OK']")
+    ok_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.XPATH, "//button[text()='OK']")))
     ok_button.click()
 
 def get_preperson_fields(driver=driver) -> tuple:

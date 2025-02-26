@@ -1,3 +1,5 @@
+from webdriver_manager.chrome import ChromeDriverManager
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
@@ -11,8 +13,8 @@ from faker import Faker
 #     driver.execute_script(f"document.body.style.zoom='{zoom_level}'")
 
 # Шлях до ChromeDriver
-chrome_driver_path = '/Users/VisualStudioCodeProjects/Askep.net.Testing_by_Selenium/chromedriver-mac-x64/chromedriver'
-service = Service(chrome_driver_path, port=0) # 0 означає, що буде обрано випадковий доступний порт
+# chrome_driver_path = '/Users/VisualStudioCodeProjects/Askep.net.Testing_by_Selenium/chromedriver-mac-x64/chromedriver'
+service = Service(port=0) # 0 означає, що буде обрано випадковий доступний порт
 
 # Створюємо опції для Chrome
 chrome_options = Options()
@@ -20,7 +22,7 @@ chrome_options.add_argument("window-size=1536,864")  # Задає розмір �
 # chrome_options.add_argument("--headless")  # запуск скриптів без графічного інтерфейсу
 
 # Ініціалізуємо драйвер Chrome з опціями та шляхом до сервісу
-driver = webdriver.Chrome(options=chrome_options, service=service)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 # Відкриваємо веб-сторінку
 driver.get('https://master.devaskep.net/')
