@@ -39,7 +39,7 @@ service = Service(port=0) # 0 означає, що буде обрано вип�
 chrome_options = Options()
 chrome_options.add_argument("window-size=1536,864")  # Задає розмір вікна для кращого масштабу
 
-# chrome_options.add_argument("--headless")  # запуск скриптів без графічного інтерфейсу
+chrome_options.add_argument("--headless")  # запуск скриптів без графічного інтерфейсу
 
 # Ініціалізуємо драйвер Chrome з опціями та шляхом до сервісу
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)

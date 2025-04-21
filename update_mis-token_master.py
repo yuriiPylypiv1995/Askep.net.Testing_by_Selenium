@@ -1,4 +1,5 @@
 import time
+import traceback
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,6 +9,7 @@ from urllib.parse import urlparse, parse_qs
 
 from initialize_data import driver
 from login import login_ADMIN_user, set_main_ADMIN_page
+from logging_config_master import logging
 
 def ehealth_auth(ehealth_login: str, ehealth_password: str) -> None:
     """Функція відкриває інтерфейс ehealth, вводить дані для авторизації і натискає кнопку для 
@@ -63,15 +65,18 @@ def get_access_token():
     time.sleep(3)
 
 if __name__ == "__main__":
-    # Виклики функцій для логіну користувача та підготовки головної сторінки
-    login_ADMIN_user("superadmin@askep.net", "kDBSCGTN")
-    set_main_ADMIN_page()
+    try:
+        # Виклики функцій для логіну користувача та підготовки головної сторінки
+        login_ADMIN_user("superadmin@askep.net", "kDBSCGTN")
+        set_main_ADMIN_page()
 
-    # Виклики основних функцій скрипта
-    ehealth_auth("mis_dbf51fee31@email.com", "3%%uZmf2&9v_bO?Tx&25")
-    get_access_token()
+        # Виклики основних функцій скрипта
+        ehealth_auth("mis_dbf51fee31@email.com", "3%%uZmf2&9v_bO?Tx&25")
+        get_access_token()
 
-    # Допоміжні дії для дебагу
-    print("The test was executed successfully")
-    # Закриття браузера
-    driver.quit()
+        # Допоміжні дії для дебагу
+        logging.info("The test was executed successfully")
+        # Закриття браузера
+        driver.quit()
+    except Exception:
+        logging.error(traceback.format_exc())  # Логування повного traceback

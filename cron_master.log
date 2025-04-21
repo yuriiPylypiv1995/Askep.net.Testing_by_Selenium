@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Users/VisualStudioCodeProjects/Askep.net.Testing_by_Selenium/update_mis-token_master.py", line 10, in <module>
+    from initialize_data import driver
+  File "/Users/VisualStudioCodeProjects/Askep.net.Testing_by_Selenium/initialize_data.py", line 45, in <module>
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chrome/webdriver.py", line 45, in __init__
+    super().__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chromium/webdriver.py", line 55, in __init__
+    self.service.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/common/service.py", line 105, in start
+    self.assert_process_still_running()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/common/service.py", line 118, in assert_process_still_running
+    raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
+selenium.common.exceptions.WebDriverException: Message: Service /Users/yuriipylypiv/.wdm/drivers/chromedriver/mac64/135.0.7049.95/chromedriver-mac-arm64/chromedriver unexpectedly exited. Status code was: -9
+
